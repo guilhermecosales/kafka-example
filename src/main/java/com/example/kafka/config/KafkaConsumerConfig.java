@@ -30,17 +30,19 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, Message> consumerFactory() {
+        JsonDeserializer<Message> jsonDeserializer = new JsonDeserializer<>();
+        jsonDeserializer.addTrustedPackages("com.example.kafka");
+
         return new DefaultKafkaConsumerFactory<>(
                 consumerConfig(),
                 new StringDeserializer(),
-                new JsonDeserializer<>()
+                jsonDeserializer
         );
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>> factory(
-            ConsumerFactory<String, Message> consumerFactory
-    ) {
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Message>>
+    messageFactory(ConsumerFactory<String, Message> consumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, Message> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
